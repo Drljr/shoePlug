@@ -265,7 +265,7 @@ h1 {
 .product-image {
     width: 400px;
     height: 400px;
-    mix-blend-mode: color-burn;
+    /* mix-blend-mode: color-burn; */
 }
 
 li {
