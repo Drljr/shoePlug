@@ -7,9 +7,9 @@ import { LuHeart } from "react-icons/lu";
 import { PiShoppingCartBold } from "react-icons/pi";
 import { FaRegUser } from "react-icons/fa";
 import { useEffect, useState } from 'react';
-import { Row, Col } from 'react-bootstrap';
+// import { Row, Col } from 'react-bootstrap';
 
-const BASE_URL = 'https://shoes-collections.p.rapidapi.com/shoes';
+const BASE_URL = 'https://the-sneaker-database-api-your-ultimate-sneaker-encyclopedia.p.rapidapi.com/search?query=';
 
 interface Product {
     id: number;
@@ -17,54 +17,78 @@ interface Product {
     description: string;
     price: number;
     image: string;
+
 }
 
 const Landing = () => {
+    const [searchProducts, setSearchProducts] = useState('');
     const [products, setProducts] = useState<Product[]>([]);
     const [error, setError] = useState(null);
 
-     const apiKey = '4bd7346311mshfb4718560f58675p19c074jsn7c131e391adb'; // Replace with your actual API key
+    const apiKey = '8349a88eb2msh844aa2251c891f3p1d1230jsn77b34dfc1f94'; // Replace with your actual API key
 
 
+
+    const options = {
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': apiKey,
+            'X-RapidAPI-Host': 'the-sneaker-database-api-your-ultimate-sneaker-encyclopedia.p.rapidapi.com'
+        }
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            const url = BASE_URL;
-            const options = {
-                method: 'GET',
-                headers: {
-                    'X-RapidAPI-Key': apiKey,
-                    'X-RapidAPI-Host': 'shoes-collections.p.rapidapi.com'
-                }
-            };
+        fetchData(searchProducts);
+    }, [searchProducts]);
 
-            try {
-                const response = await fetch(url, options);
-                const result = await response.json(); // Assuming the API returns JSON
-                setProducts(result);
-            } catch (e) {
-                setError(error);
-            }
-        };
+    const handleSearchChange = (event) => {
+        setSearchProducts(event.target.value);
+    };
 
-        fetchData();
-    }, []); // Empty dependency array ensures data is fetched only once
 
-    if (error) {
-        return <div>Error fetching data</div>;
+    const fetchData = async (query) => {
+    const url = `${BASE_URL}${query}`;
+    try {
+        const response = await fetch(url, options);
+        const data = await response.json();
+        setProducts(data);
+        setError(null);
+    } catch (e) {
+        setError(error);
     }
-
-    if (!products) {
-        return <div>Loading...</div>;
-    }
+  };
 
     // useEffect(() => {
-    //     fetch(BASE_URL)
-    //         .then(res => res.json())
-    //         .then(json => setProducts(json))
-    //         .catch(error => console.error(error));
-    // }, []);
-    // products;
+    //     const fetchData = async () => {
+    //         const url = BASE_URL;
+    //         const options = {
+    //             method: 'GET',
+    //             headers: {
+    //                 'X-RapidAPI-Key': apiKey,
+    //                 'X-RapidAPI-Host': 'the-sneaker-database-api-your-ultimate-sneaker-encyclopedia.p.rapidapi.com'
+    //             }
+    //         };
+
+    //         try {
+    //             const response = await fetch(url, options);
+    //             const result = await response.json(); // Assuming the API returns JSON
+    //             setProducts(result);
+    //         } catch (e) {
+    //             setError(error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []); // Empty dependency array ensures data is fetched only once
+
+    // if (error) {
+    //     return <div>Error fetching data</div>;
+    // }
+
+    // if (!products) {
+    //     return <div>Loading...</div>;
+    // }
+
 
     return (
         <div className='page-container'>
@@ -74,7 +98,7 @@ const Landing = () => {
                 </div>
                 <div className="search-bar">
                     <div className="search-logo-container">
-                        <RiSearch2Line className='search-logo' size="25px" />
+                        <RiSearch2Line className='search-logo' size="25px" onClick={() => fetchData(searchProducts)}/>
                     </div>
                     <div className='likes-container'>
                         <LuHeart className='likes' size="20px" />
@@ -87,7 +111,7 @@ const Landing = () => {
                     <div className='user-container'>
                         <FaRegUser className='user' size="20px" />
                     </div>
-                    <input type="text" placeholder="Search for shoes" />
+                    <input type="text" value={searchProducts} onChange={handleSearchChange} placeholder="Search for shoes" />
                 </div>
                 <div className='Sp'>
                     <span className='radwave-text'>
@@ -117,13 +141,12 @@ const Landing = () => {
             <div className="body-container">
                 <h1>Products</h1>
 
-                <Row xs={1} md={4} className="g-4">
+                {/* <Row xs={1} md={4} className="g-4">
                     {products.map((Product) => (
-                        <Col key={Product.id}> {/* Use Col for grid layout */}
-                            {/* You can customize how you display each product based on its properties */}
+                        <Col key={Product.id}>
                             <div className="product-card">
                                 <div className="product">
-                                    <img src={Product.image} alt={Product.name} className='product-image'/> {/* Assuming there's an image property */}
+                                    <img src={Product.image} alt={Product.name} className='product-image'/>
                                 </div>
                                 <div className="product">
                                 <li>{Product.name}</li>
@@ -134,7 +157,7 @@ const Landing = () => {
                             </div>
                         </Col>
                     ))}
-                </Row>
+                </Row> */}
             </div>
         </div>
     );

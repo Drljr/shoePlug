@@ -45,11 +45,11 @@ export class Cart extends Component {
                         <span className='member1'>Members get free shipping on orders ₦20,000+</span>
                         <span className='member2'>Become a SHOES Member for fast free shipping on orders ₦20,000+</span>
                         <span className='member3'>
-                            <Link to="">Join us</Link> <span className='or'>or</span>
+                            <Link to="/">Join us</Link> <span className='or'>or</span>
                         </span>
                         <span className='cart-name'>Cart</span>
                         <span className='member4'>
-                            <Link to="">Sign in</Link>
+                            <Link to="/Signup">Sign in</Link>
                         </span>
                     </div>
                 </div>
