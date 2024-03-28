@@ -9,54 +9,60 @@ import { FaRegUser } from "react-icons/fa";
 import { useEffect, useState } from 'react';
 // import { Row, Col } from 'react-bootstrap';
 
-const BASE_URL = 'https://the-sneaker-database-api-your-ultimate-sneaker-encyclopedia.p.rapidapi.com/search?query=';
 
 interface Product {
     id: number;
-    name: string;
+    title: string;
     description: string;
-    price: number;
+    brand: string;
     image: string;
 
 }
 
 const Landing = () => {
     const [searchProducts, setSearchProducts] = useState('');
-    const [products, setProducts] = useState<Product[]>([]);
-    const [error, setError] = useState(null);
+    const [searchResults, setSearchResults] = useState<Product[]>([]);
+    const [error, setError] = useState<Error | null>(null);
 
-    const apiKey = '8349a88eb2msh844aa2251c891f3p1d1230jsn77b34dfc1f94'; // Replace with your actual API key
+    const BASE_URL = 'https://the-sneaker-database-api-your-ultimate-sneaker-encyclopedia.p.rapidapi.com/search?query=';
+    const apiKey = '4bd7346311mshfb4718560f58675p19c074jsn7c131e391adb'; // Replace with your actual API key
 
-
-
-    const options = {
+    const options: RequestInit = {
         method: 'GET',
         headers: {
-            'X-RapidAPI-Key': apiKey,
-            'X-RapidAPI-Host': 'the-sneaker-database-api-your-ultimate-sneaker-encyclopedia.p.rapidapi.com'
+        'X-RapidAPI-Key': apiKey,
+        'X-RapidAPI-Host': 'the-sneaker-database-api-your-ultimate-sneaker-encyclopedia.p.rapidapi.com'
+        }
+    };
+
+    const fetchData = async (query: string) => {
+        const url = `${BASE_URL}${query}`;
+        try {
+        const response = await fetch(url, options);
+        const data = await response.json();
+        // Assuming the API response has a "results" property containing the products
+        const productList = data?.results as Product[] || [];
+        setSearchResults(productList);
+        setError(null);
+        } catch (e) {
+        setError(error);
         }
     };
 
     useEffect(() => {
+        if (searchProducts.length > 0) {
         fetchData(searchProducts);
+        } else {
+        setSearchResults([]); // Clear results when search term is empty
+        }
     }, [searchProducts]);
 
-    const handleSearchChange = (event) => {
-        setSearchProducts(event.target.value);
+    const handleSearchChange = (value: string) => {
+        setSearchProducts(value);
     };
 
 
-    const fetchData = async (query) => {
-    const url = `${BASE_URL}${query}`;
-    try {
-        const response = await fetch(url, options);
-        const data = await response.json();
-        setProducts(data);
-        setError(null);
-    } catch (e) {
-        setError(error);
-    }
-  };
+
 
     // useEffect(() => {
     //     const fetchData = async () => {
@@ -111,7 +117,19 @@ const Landing = () => {
                     <div className='user-container'>
                         <FaRegUser className='user' size="20px" />
                     </div>
-                    <input type="text" value={searchProducts} onChange={handleSearchChange} placeholder="Search for shoes" />
+                    <input type="text" value={searchProducts} onChange={(e) => handleSearchChange(e.target.value)} placeholder="Search for shoes" />
+                    {searchResults.length > 0 && (
+                        <div className="search-results">
+                        {searchResults.map((product) => (
+                            <div key={product.id} className="search-result-item">
+                            <img src={product.image} alt={product.title} className="search-result-image" />
+                            <div className="search-result-details">
+                                <p>{product.title}</p>
+                            </div>
+                            </div>
+                        ))}
+                        </div>
+                    )}
                 </div>
                 <div className='Sp'>
                     <span className='radwave-text'>
